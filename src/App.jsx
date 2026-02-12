@@ -1,28 +1,22 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-
-// import pages
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TaskList from './components/TaskList';
 import Layout from './components/Layout';
 import AddTask from './components/AddTask';
-import './App.css'
+import GlobalProvider from "./context/GlobalProvider.jsx";
 
 function App() {
-
   return (
-    <>
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout/>}>
-         <Route path='/'
-          element={<TaskList/>}></Route>
-         <Route path='/form'
-          element={<AddTask/>}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-    </>
-  )
+    <GlobalProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path='/' element={<TaskList />} />
+            <Route path='/form' element={<AddTask />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </GlobalProvider>
+  );
 }
 
-export default App
+export default App;

@@ -1,10 +1,14 @@
+import { useContext } from "react";
+import { GlobalContext } from "../context/GlobalProvider.jsx";
 
+export default function TaskList() {
+  const { tasks } = useContext(GlobalContext);
 
-
-// shows list element
-export default function TaskList(){
   return (
-    <>
-    </>
-  )
+    <ul>
+      {tasks.map((t) => (
+        <li key={t.id}>{t.title}</li>
+      ))}
+    </ul>
+  );
 }
