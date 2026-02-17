@@ -4,6 +4,9 @@ import Layout from './components/Layout';
 import AddTask from './components/AddTask';
 import GlobalProvider from "./context/GlobalProvider.jsx";
 
+import './index.css'
+
+
 function App() {
   return (
     <GlobalProvider>
