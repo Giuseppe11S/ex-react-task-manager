@@ -22,5 +22,31 @@ export default function useTasks(){
         getTasks();
       }, [apiUrl])
 
-        return { tasks, setTasks };
+  const addTask = async (newTask) => {
+    try {
+      const res = await fetch(`${apiUrl}/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newTask)
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setTasks(prev => [...prev, data.task]);
+        return data.task; 
+      } else {
+
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.error("Errore nell'aggiunta del task:", error.message);
+      throw error; 
+    }
+  };
+
+
+        return { tasks, setTasks, getTasks, addTask };
 }

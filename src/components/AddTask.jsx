@@ -3,7 +3,11 @@
 
 import { useState, useRef } from "react"
 
+import useTasks from "../hooks/useTasks";
+
 export default function AddTask(){
+
+  const { addTask } = useTasks();
 
   // simboli vietati all' input title
   const symbols = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
@@ -26,28 +30,23 @@ export default function AddTask(){
     }));
   }
 
-   function handleSubmit (e) {
+
+   async function handleSubmit (e) {
      e.preventDefault()
-      console.log({
+
+    try {
+      await addTask({
         title: form.title,
         description: descriptionRef.current.value,
         status: form.status
       });
 
-      // validazione
-      if(form.title.trim() === ''){
-        setError('Il campo non può essere vuoto')
-        return;
-      }
-
-      for(let char of symbols){
-        if(form.title.includes(char)){
-          setError('Il titolo non può contenre simboli speciali')
-          return;
-        }
-      }
-
-      setError('');
+      alert("Task aggiunto con successo!");
+      setForm({ title: '', status: 'To do' });
+      descriptionRef.current.value = '';
+    } catch (error) {
+      alert("Errore: " + error.message);
+    }
    }
   
   return (
