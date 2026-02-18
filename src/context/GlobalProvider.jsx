@@ -1,35 +1,16 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext } from "react";
 
-export const GlobalContext = createContext(); // named export
+import useTasks from "../hooks/useTasks";
 
-export default function GlobalProvider( {children} ){
+export const GlobalContext = createContext();
 
-  const [tasks, setTasks] = useState([]);
+export default function GlobalProvider({ children }) {
 
-  const apiUrl = import.meta.env.VITE_URL_API;
-
-
-  const getTasks = async() => {
-    try{
-      const res = await fetch(`${apiUrl}/tasks`)
-      const data = await res.json();
-      setTasks(data)
-      console.log(data) ;
-    } 
-    catch(error){
-      console.error('Dati non ricevuti')
-    }
-  }
-
-  useEffect(() => {
-    console.log("API URL:", apiUrl);  // dovrebbe stampare http://localhost:3001
-    getTasks();
-  }, [])
+  const tasksData = useTasks(); 
 
   return (
-    <GlobalContext.Provider value={{ tasks, setTasks, getTasks }}>
+    <GlobalContext.Provider value={tasksData}>
       {children}
     </GlobalContext.Provider>
   );
-
 }

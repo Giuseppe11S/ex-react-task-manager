@@ -1,38 +1,45 @@
+import { useState, useRef, useContext } from "react";
+import { GlobalContext } from "../context/GlobalProvider";
 
-// check form and add news tasks
+export default function AddTask() {
 
-import { useState, useRef } from "react"
+  const { addTask } = useContext(GlobalContext);
 
-import useTasks from "../hooks/useTasks";
-
-export default function AddTask(){
-
-  const { addTask } = useTasks();
-
-  // simboli vietati all' input title
   const symbols = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
 
-  const [error, setError] = useState('')
+  const [error, setError] = useState('');
   const [form, setDataForm] = useState({
     title: '',
     status: 'To do'
-
-  })
+  });
 
   const descriptionRef = useRef('');
 
   function handleChange(e) {
-    const { name , value } = e.target;
-
+    const { name, value } = e.target;
     setDataForm(prev => ({
       ...prev,
       [name]: value
     }));
   }
 
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-   async function handleSubmit (e) {
-     e.preventDefault()
+    // 🔹 VALIDAZIONE
+    if (form.title.trim() === '') {
+      setError("Il titolo non può essere vuoto");
+      return;
+    }
+
+    for (let char of symbols) {
+      if (form.title.includes(char)) {
+        setError("Il titolo non può contenere simboli speciali");
+        return;
+      }
+    }
+
+    setError('');
 
     try {
       await addTask({
@@ -42,38 +49,45 @@ export default function AddTask(){
       });
 
       alert("Task aggiunto con successo!");
-      setForm({ title: '', status: 'To do' });
+
+      // reset form
+      setDataForm({ title: '', status: 'To do' });
       descriptionRef.current.value = '';
+
     } catch (error) {
       alert("Errore: " + error.message);
     }
-   }
-  
+  }
+
   return (
-    <>
     <div className="flex justify-center mt-[20px] border">
-      <form onSubmit={handleSubmit}
-      className=" mt-[30px flex-col border w-[50%]">
+      <form onSubmit={handleSubmit} className="mt-[30px] flex-col border w-[50%]">
         <h1 className="text-[30px]">Aggiungi la tua nota</h1>
-        <label htmlFor="">Titolo: </label>
-        <input type="text" 
-        value={form.title}
-        onChange={handleChange}
-        name="title"/>
+        <label>Titolo: </label>
+        <input
+          type="text"
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+        />
         {error && <p className="text-red-500 mt-1">{error}</p>}
         <label>Descrizione: </label>
-        <textarea name="description" ref={descriptionRef}
-         ></textarea>
-        <select name="status" 
-         onChange={handleChange}>
+        <textarea ref={descriptionRef}></textarea>
+
+        <label>Stato: </label>
+        <select
+          name="status"
+          value={form.status}
+          onChange={handleChange}
+        >
           <option value="To do">To do</option>
           <option value="Doing">Doing</option>
           <option value="Done">Done</option>
         </select>
-        <button type="submit"
-        className="border">Aggiungi Task</button>
+        <button type="submit" className="border">
+          Aggiungi Task
+        </button>
       </form>
-   </div>
-    </>
-  )
+    </div>
+  );
 }
