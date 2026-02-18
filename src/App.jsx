@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TaskList from './components/TaskList';
 import Layout from './components/Layout';
 import AddTask from './components/AddTask';
+import TaskDetail from "./components/TaskDetail.jsx";
 import GlobalProvider from "./context/GlobalProvider.jsx";
 
 import './index.css'
@@ -15,6 +16,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path='/' element={<TaskList />} />
             <Route path='/form' element={<AddTask />} />
+            <Route path="/task/:id" element={<TaskDetail/>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

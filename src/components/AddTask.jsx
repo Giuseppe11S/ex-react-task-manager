@@ -10,7 +10,8 @@ export default function AddTask() {
   const [error, setError] = useState('');
   const [form, setDataForm] = useState({
     title: '',
-    status: 'To do'
+    status: 'To do',
+    createdAt: new Date()
   });
 
   const descriptionRef = useRef('');
@@ -26,7 +27,6 @@ export default function AddTask() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // 🔹 VALIDAZIONE
     if (form.title.trim() === '') {
       setError("Il titolo non può essere vuoto");
       return;
