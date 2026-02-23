@@ -68,7 +68,41 @@ export default function useTasks(){
   } catch (error) {
     throw error;
   }
+
+}
+  
+ async function updateTask(updTask) {
+  try {
+    const response = await fetch(`${apiUrl}/tasks/${updTask.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updTask)
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    // aggiorna la task nello stato
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === updTask.id
+          ? data.task
+          : task
+      )
+    );
+
+    return data.task;
+
+  } catch (error) {
+    console.error("Errore aggiornamento task:", error.message);
+    throw error;
+  }
 }
 
-        return { tasks, setTasks, getTasks, addTask, removeTask };
+ return { tasks, setTasks, getTasks, addTask, removeTask, updateTask };
 }

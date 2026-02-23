@@ -4,12 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../context/GlobalProvider";
 
 import Modal from "./Modal";
+import EditTaskModal from "./EditTaskModal";
 
 export default function TaskDetail() {
 
   const { id } = useParams();
-  const { tasks, removeTask } = useContext(GlobalContext);
+  const { tasks, removeTask, updateTask } = useContext(GlobalContext);
   const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const handleUpdate = async (updatedTask) => {
+  try {
+    await updateTask(updatedTask);
+    alert("Task modificata con successo!");
+  } catch (error) {
+    alert("Errore: " + error.message);
+  }
+};
 
   const task = tasks.find(t => t.id === Number(id));
   if (!task) {
@@ -52,6 +63,15 @@ export default function TaskDetail() {
       onClose={() => setShowModal(false)}
       onConfirm={handleDelete}
       confirmText="Elimina"
+    />
+
+    <button onClick={() => setShowEditModal(true)}>Modifica Task</button>
+
+    <EditTaskModal
+      show={showEditModal}
+      onClose={() => setShowEditModal(false)}
+      task={task}
+      onSave={handleUpdate}
     />
     </>
   )
