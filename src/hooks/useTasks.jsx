@@ -5,7 +5,7 @@ export default function useTasks(){
 
    const apiUrl = import.meta.env.VITE_URL_API;
     
-    
+ // chiamata GET
   const getTasks = async() => {
      try{
           const res = await fetch(`${apiUrl}/tasks`)
@@ -22,6 +22,7 @@ export default function useTasks(){
         getTasks();
       }, [apiUrl])
 
+  // chiamata POST
   const addTask = async (newTask) => {
     try {
       const res = await fetch(`${apiUrl}/tasks`, {
@@ -47,6 +48,27 @@ export default function useTasks(){
     }
   };
 
+  // chiamata DELETE
+  async function removeTask(taskId) {
+  try {
+    const response = await fetch(`${apiUrl}/tasks/${taskId}`, {
+      method: "DELETE"
+    });
 
-        return { tasks, setTasks, getTasks, addTask };
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.message);
+    }
+
+    setTasks(prev =>
+      prev.filter(task => task.id !== taskId)
+    );
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+        return { tasks, setTasks, getTasks, addTask, removeTask };
 }
